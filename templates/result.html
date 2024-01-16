@@ -1,0 +1,143 @@
+<style>
+    
+    .search-btn {
+        padding: 5px 10px;
+        margin-top: 5px;
+        border: none;
+        background-color: #333;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 3px;
+    }
+    .search-btn:hover {
+        background-color: #555;
+    }
+
+  .submit-btn {
+    padding: 8px 15px;
+    background-color: #c300ff;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    align-self: center;
+}
+
+</style>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet/less" type="text/css" href="../static/index.scss" />
+<script src="https://cdn.jsdelivr.net/npm/less@4.1.1" ></script>
+<head>
+    <meta charset="utf-8">
+    <title>SDC</title>
+    <style>
+    	* {
+    		margin: 0;
+    		padding: 0;
+    	}
+    	html {
+    		height: 100%;
+    	}
+    	body {
+    		background: #f5f5f5 url('../static/img/bg.jpg') no-repeat center;
+    		font: 14px/1.4em 'Helvetica Neue', Helvetica, 'Microsoft Yahei', Arial, sans-serif;
+    	}
+    </style>
+</head>
+<body>
+  <div id="app">
+    <div class="sidebar">
+        <div id="card">
+            <header>
+                <img class="avatar" src="../static/img/logo.png">
+                <p class="name">{{ current_user.username }}</p>
+            </header>
+            <footer>
+                <form action="{{ url_for('result') }}" method="GET">
+                    <input class="search" type="text" name="query" placeholder="Search histories..." value="{{ request.args.get('query', '') }}">
+                    <button type="submit" class="search-btn">Search</button>
+                </form>
+            </footer>
+        </div>
+
+        <div id="list">
+            <p class="name">HISTORY</p>
+            <ul>
+                {% for record in histories %}
+                    <li class="history-record">
+                        <a href="{{ url_for('history_detail', history_id=record.id) }}" target="_blank">
+                            {{ record.text_input.split()[:3]|join(' ') }}...
+                          </a>   
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="main">
+        <div id="message">
+            <div class="nameHeader">
+                <header style="height:100px">
+                    <div class="title">Self Diagnosis Center</div>
+                    <a href="{{ url_for('logout') }}" style="float:right; padding: 5px 15px; background-color: red; color: white; border-radius: 5px; text-decoration: none;">Logout</a>
+                </header>
+                <h5 style="color:rgb(13, 13, 155);margin-left:76px;margin-top: -35px;">Stay strong,Live Long</h5>
+            </div>
+            <div id="detailedHistory"></div>
+            <div>
+                <ul style="margin-top:40px">
+                    <li>
+                        <div class="main">
+                            <img class="avatar" src="../static/img/1.jpg" />
+                            <p class="user-input">Dear {{ current_user.username }}</p>
+                            <p class="text">{{ result }}</p>
+                            <p class="suggestion" style="color: #008b15; margin-top: 10px;"><i>Suggestion:</i>{{ suggestion }}</p>                            
+<div class="text margin-top: 10px;>
+                                        <!-- Doctors' information -->
+                            {% if doctors %}
+                            <p class="suggestion" style="color: #0b6271; margin-top: 10px;">Recommended Doctors:</p>
+                            <ul  style="color: #6b7570;">
+                                {% for doctor in doctors %}
+                                <li>
+                                    <strong>{{ doctor.name }}</strong><br>
+                                    Hospital: {{ doctor.hospital }}<br>
+                                    Contact: {{ doctor.contact }} <br>
+                                    <a href="{{ doctor.location }}" target="_blank">Get Location Direction</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+</div>
+
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div id="uesrtext">
+            <form method="POST" action="/">
+                <textarea class="textinput" name="text" placeholder="Press Ctrl + Enter to send msg"></textarea>
+                <button type="submit" class="submit-btn" style="margin-left:83%; margin-top:5px; width: 70px">ASK</button>
+            </form>
+        </div>
+    </div>
+  </div>
+</body>
+</html>
+<script>
+    function showHistoryDetails(input, diagnosis) {
+        const targetDiv = document.getElementById('detailedHistory');
+        targetDiv.innerHTML = `
+            <strong>Query:</strong> ${input}<br>
+            <strong>Diagnosis:</strong> ${diagnosis}
+        `;
+    }
+  </script>
+  
